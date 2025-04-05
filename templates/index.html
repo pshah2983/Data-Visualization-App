@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+        .container {
+            padding-top: 80px;
+        }
+        h1 {
+            font-weight: 700;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00c6fb 0%, #005bea 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
+        }
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 50px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.6s;
+            animation-fill-mode: both;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #00c6fb;
+        }
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .feature-text {
+            opacity: 0.8;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="/">DataViz</a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-item nav-link" href="/login">Login</a>
+                <a class="nav-item nav-link" href="/register">Register</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1>Transform Your Data Into Insights</h1>
+                <p>Upload your datasets and create beautiful visualizations with ease. Our powerful tools help you understand your data better.</p>
+                <a href="/login" class="btn btn-primary">Get Started <i class="fas fa-arrow-right ml-2"></i></a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://cdn.pixabay.com/photo/2018/05/08/08/50/artificial-intelligence-3382507_1280.jpg" alt="Data Visualization" class="img-fluid rounded" style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); animation: fadeInUp 1s ease 0.4s; animation-fill-mode: both;">
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="feature-title">Interactive Charts</h3>
+                    <p class="feature-text">Create dynamic and interactive visualizations that bring your data to life.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-upload"></i></div>
+                    <h3 class="feature-title">Easy Upload</h3>
+                    <p class="feature-text">Upload your data in various formats including CSV, Excel, and TXT files.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-share-alt"></i></div>
+                    <h3 class="feature-title">Share Insights</h3>
+                    <p class="feature-text">Export and share your visualizations with colleagues and stakeholders.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Add parallax effect
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                document.querySelector('.container').style.transform = 'translateY(' + (scrolled * 0.1) + 'px)';
+            });
+        });
+    </script>
+</body>
+</html> 

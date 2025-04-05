@@ -1,0 +1,245 @@
+# Power BI Visualization Guide for Walmart Sales Data
+
+## 1. Sales Overview Dashboard
+
+### 1.1 Time Series Analysis with Forecast
+**Type**: Line Chart
+**Steps**:
+1. Create a new Line Chart visual
+2. Configure fields:
+   - X-axis: date (from processed_sales)
+   - Y-axis: Purchase (from processed_sales)
+   - Secondary Y-axis: forecast (from sales_forecasts)
+3. Format settings:
+   - Set line colors (e.g., blue for actual, red for forecast)
+   - Add title: "Sales Trend with Forecast"
+   - Enable data labels
+   - Add tooltips showing exact values
+
+### 1.2 KPI Cards
+**Type**: Card Visual
+**Steps**:
+1. Create multiple Card visuals
+2. For each KPI:
+   - Total Sales: SUM(processed_sales[Purchase])
+   - Average Daily Sales: AVERAGE(processed_sales[Purchase])
+   - Sales Growth: 
+     ```dax
+     Sales Growth = 
+     VAR CurrentSales = SUM(processed_sales[Purchase])
+     VAR PreviousSales = CALCULATE(SUM(processed_sales[Purchase]), DATEADD('processed_sales'[date], -1, MONTH))
+     RETURN DIVIDE(CurrentSales - PreviousSales, PreviousSales)
+     ```
+
+## 2. Product Analysis Dashboard
+
+### 2.1 Product Category Performance
+**Type**: Column Chart
+**Steps**:
+1. Create a Column Chart
+2. Configure fields:
+   - X-axis: Product_Category
+   - Y-axis: Purchase
+3. Add sorting by Purchase in descending order
+4. Format:
+   - Add data labels
+   - Use category colors
+   - Add title: "Sales by Product Category"
+
+### 2.2 Product Heatmap
+**Type**: Matrix Visual
+**Steps**:
+1. Create a Matrix visual
+2. Configure fields:
+   - Rows: Product_Category
+   - Columns: date (grouped by month)
+   - Values: Purchase
+3. Format:
+   - Apply conditional formatting
+   - Add title: "Product Category Performance Over Time"
+
+### 2.3 Top Products Donut Chart
+**Type**: Donut Chart
+**Steps**:
+1. Create a Donut Chart
+2. Configure fields:
+   - Legend: Product_Category
+   - Values: Purchase
+3. Add top N filter (e.g., top 5)
+4. Format:
+   - Add percentage labels
+   - Use contrasting colors
+
+## 3. Customer Insights Dashboard
+
+### 3.1 Customer Demographics
+**Type**: Pie Chart
+**Steps**:
+1. Create a Pie Chart
+2. Configure fields:
+   - Legend: Gender
+   - Values: Purchase
+3. Format:
+   - Add percentage labels
+   - Use gender-specific colors
+
+### 3.2 Purchase Patterns by Occupation
+**Type**: Bar Chart
+**Steps**:
+1. Create a Bar Chart
+2. Configure fields:
+   - X-axis: Occupation
+   - Y-axis: Purchase
+3. Add sorting by Purchase
+4. Format:
+   - Add data labels
+   - Use consistent colors
+
+### 3.3 City Category Analysis
+**Type**: Map Visual
+**Steps**:
+1. Create a Map visual
+2. Configure fields:
+   - Location: City_Category
+   - Size: Purchase
+3. Format:
+   - Adjust bubble sizes
+   - Add tooltips
+
+## 4. Temporal Analysis Dashboard
+
+### 4.1 Daily Sales Pattern
+**Type**: Line Chart
+**Steps**:
+1. Create a Line Chart
+2. Configure fields:
+   - X-axis: date (grouped by day of week)
+   - Y-axis: Purchase
+3. Format:
+   - Add markers
+   - Include trend line
+
+### 4.2 Monthly Trend
+**Type**: Area Chart
+**Steps**:
+1. Create an Area Chart
+2. Configure fields:
+   - X-axis: date (grouped by month)
+   - Y-axis: Purchase
+3. Format:
+   - Add gradient fill
+   - Include data labels
+
+### 4.3 Peak Hours Analysis
+**Type**: Column Chart
+**Steps**:
+1. Create a Column Chart
+2. Configure fields:
+   - X-axis: date (grouped by hour)
+   - Y-axis: Purchase
+3. Format:
+   - Add data labels
+   - Use consistent colors
+
+## 5. Forecast Analysis Dashboard
+
+### 5.1 Forecast vs Actual Comparison
+**Type**: Line and Column Chart
+**Steps**:
+1. Create a Line and Column Chart
+2. Configure fields:
+   - X-axis: date
+   - Column Y-axis: Purchase
+   - Line Y-axis: forecast
+3. Format:
+   - Use contrasting colors
+   - Add legend
+   - Include data labels
+
+### 5.2 Forecast Accuracy Metrics
+**Type**: Gauge
+**Steps**:
+1. Create a Gauge visual
+2. Configure fields:
+   - Value: Forecast Accuracy Measure
+   ```dax
+   Forecast Accuracy = 
+   1 - ABS(DIVIDE(SUM(sales_forecasts[forecast]) - SUM(processed_sales[Purchase]), SUM(processed_sales[Purchase])))
+   ```
+3. Format:
+   - Set min/max values
+   - Add color zones
+
+### 5.3 Forecast Distribution
+**Type**: Histogram
+**Steps**:
+1. Create a Histogram
+2. Configure fields:
+   - Values: forecast
+3. Format:
+   - Adjust bin size
+   - Add mean line
+
+## 6. Interactive Elements
+
+### 6.1 Slicers
+**Steps**:
+1. Add Date Range Slicer
+2. Add Product Category Slicer
+3. Add City Category Slicer
+4. Format:
+   - Use consistent styling
+   - Enable multi-select where appropriate
+
+### 6.2 Cross-filtering
+**Steps**:
+1. Enable cross-filtering between visuals
+2. Set up relationships between tables
+3. Test filtering behavior
+
+## 7. Advanced Analytics
+
+### 7.1 Year-over-Year Growth
+**DAX Measure**:
+```dax
+YoY Growth = 
+VAR CurrentYear = YEAR(TODAY())
+VAR PreviousYear = CurrentYear - 1
+VAR CurrentSales = CALCULATE(SUM(processed_sales[Purchase]), YEAR(processed_sales[date]) = CurrentYear)
+VAR PreviousSales = CALCULATE(SUM(processed_sales[Purchase]), YEAR(processed_sales[date]) = PreviousYear)
+RETURN DIVIDE(CurrentSales - PreviousSales, PreviousSales)
+```
+
+### 7.2 Moving Average
+**DAX Measure**:
+```dax
+7-Day Moving Average = 
+CALCULATE(
+    AVERAGE(processed_sales[Purchase]),
+    DATESINPERIOD(processed_sales[date], LASTDATE(processed_sales[date]), -7, DAY)
+)
+```
+
+## 8. Report Theme and Formatting
+
+### 8.1 Consistent Formatting
+**Steps**:
+1. Create a theme
+2. Apply consistent:
+   - Fonts
+   - Colors
+   - Sizes
+   - Spacing
+
+### 8.2 Navigation
+**Steps**:
+1. Create navigation buttons
+2. Set up bookmarks
+3. Add page navigation
+
+## Notes:
+- All measures should be created in the Model view
+- Use appropriate data types for all fields
+- Enable refresh when data changes
+- Test all interactions and filters
+- Document any assumptions or limitations 

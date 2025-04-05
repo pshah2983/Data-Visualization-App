@@ -1,0 +1,41 @@
+# Virtual Environment
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Temporary upload files
+uploads/*
+!uploads/.gitkeep
+
+# Data files (uncomment if you don't want to track data files)
+# *.csv
+# *.xlsx
+# *.xls
+
+# Compiled files
+*.pyc
+
+# Logs
+*.log
+
+# Power BI temp files
+*.pbix.temp 

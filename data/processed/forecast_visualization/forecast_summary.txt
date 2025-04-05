@@ -1,0 +1,14 @@
+Sales Forecast Summary
+====================
+
+Historical Sales Statistics:
+Average Daily Sales: $9298.24
+Standard Deviation: $4966.82
+Minimum Sales: $185.00
+Maximum Sales: $23961.00
+
+Forecast Statistics:
+Average Forecasted Sales: $8423.52
+Standard Deviation: $4184.24
+Minimum Forecast: $403.17
+Maximum Forecast: $16640.19
