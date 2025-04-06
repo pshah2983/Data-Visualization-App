@@ -185,6 +185,16 @@
         </div>
     </nav>
     <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <div class="row">
             <div class="col-md-12">
                 <div class="dashboard-card">
@@ -218,24 +228,32 @@
         
         <div class="row">
             <div class="col-md-6">
-                <div class="dashboard-card animation-delay-1">
-                    <h3 class="card-title">Upload Dataset</h3>
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="upload-area">
-                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                            <p>Drag and drop your file here or click to browse</p>
-                            <input type="file" name="file" class="d-none" id="file-input">
-                            <button type="button" class="btn btn-outline-light" onclick="document.getElementById('file-input').click()">
-                                <i class="fas fa-folder-open mr-2"></i>Browse Files
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">
+                            <i class="fas fa-upload me-2"></i>Upload Dataset
+                        </h5>
+                        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="dataset_name" class="form-label">Dataset Name</label>
+                                <input type="text" class="form-control" id="dataset_name" name="dataset_name" required>
+                                <div class="invalid-feedback">
+                                    Please provide a dataset name.
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="file" class="form-label">File</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".csv,.xlsx,.txt" required>
+                                <div class="form-text text-light">Supported formats: CSV, Excel, TXT</div>
+                                <div class="invalid-feedback">
+                                    Please select a file to upload.
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Upload
                             </button>
-                            <p class="mt-2 small">Supported formats: CSV, Excel, TXT</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="dataset_name">Dataset Name</label>
-                            <input type="text" class="form-control" id="dataset_name" name="dataset_name" placeholder="Enter a name for your dataset" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Upload <i class="fas fa-upload ml-2"></i></button>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
             
@@ -295,59 +313,24 @@
         </div>
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // File input change handler
-            document.getElementById('file-input').addEventListener('change', function() {
-                if (this.files.length > 0) {
-                    const fileName = this.files[0].name;
-                    document.querySelector('.upload-area p').textContent = `Selected file: ${fileName}`;
-                }
+        // Form validation
+        (function() {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
             });
-            
-            // Drag and drop functionality
-            const uploadArea = document.querySelector('.upload-area');
-            
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, highlight, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, unhighlight, false);
-            });
-            
-            function highlight() {
-                uploadArea.classList.add('bg-light');
-            }
-            
-            function unhighlight() {
-                uploadArea.classList.remove('bg-light');
-            }
-            
-            uploadArea.addEventListener('drop', handleDrop, false);
-            
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                
-                if (files.length > 0) {
-                    document.getElementById('file-input').files = files;
-                    document.querySelector('.upload-area p').textContent = `Selected file: ${files[0].name}`;
-                }
-            }
-        });
+        })();
     </script>
 </body>
 </html> 

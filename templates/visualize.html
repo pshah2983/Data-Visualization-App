@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">Create Visualization</h2>
+                <div>
+                    <a href="{{ url_for('download_dataset', dataset_id=dataset.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>Download Dataset
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary ms-2">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset Info Card -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Dataset: {{ dataset.name }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-2"><strong>File:</strong> {{ dataset.filename }}</p>
+                    <p class="mb-0"><strong>Type:</strong> {{ dataset.file_type.upper() }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0"><strong>Available Columns:</strong> {{ columns.all|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visualization Form -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Visualization Settings</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="needs-validation" novalidate>
+                        <!-- Visualization Name -->
+                        <div class="mb-4">
+                            <label for="viz_name" class="form-label">Visualization Name</label>
+                            <input type="text" class="form-control" id="viz_name" name="viz_name" required>
+                            <div class="invalid-feedback">Please provide a name for your visualization.</div>
+                        </div>
+
+                        <!-- Chart Type -->
+                        <div class="mb-4">
+                            <label for="chart_type" class="form-label">Chart Type</label>
+                            <select class="form-select" id="chart_type" name="chart_type" required>
+                                <option value="line">Line Chart</option>
+                                <option value="bar">Bar Chart</option>
+                                <option value="scatter">Scatter Plot</option>
+                                <option value="pie">Pie Chart</option>
+                                <option value="histogram">Histogram</option>
+                            </select>
+                        </div>
+
+                        <!-- Axis Selection -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="x_axis" class="form-label">X-Axis</label>
+                                <select class="form-select" id="x_axis" name="x_axis" required>
+                                    <option value="">Select Column</option>
+                                    {% for col in columns.all %}
+                                    <option value="{{ col }}">{{ col }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Please select an X-axis column.</div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label for="y_axis" class="form-label">Y-Axis</label>
+                                <select class="form-select" id="y_axis" name="y_axis" required>
+                                    <option value="">Select Column</option>
+                                    {% for col in columns.numeric %}
+                                    <option value="{{ col }}">{{ col }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Please select a Y-axis column.</div>
+                            </div>
+                        </div>
+
+                        <!-- Color By (Optional) -->
+                        <div class="mb-4">
+                            <label for="color_by" class="form-label">Color By (Optional)</label>
+                            <select class="form-select" id="color_by" name="color_by">
+                                <option value="None">None</option>
+                                {% for col in columns.categorical %}
+                                <option value="{{ col }}">{{ col }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-chart-line me-2"></i>Create Visualization
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                <i class="fas fa-undo me-2"></i>Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Preview -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Data Preview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="max-height: 400px;">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    {% for column in columns.all %}
+                                    <th>{{ column }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in sample_data %}
+                                <tr>
+                                    {% for column in columns.all %}
+                                    <td>{{ row[column] }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        border-radius: 10px 10px 0 0 !important;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 0.6rem 1rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        border: none;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0a58ca, #084298);
+        transform: translateY(-1px);
+    }
+    .btn-outline-primary {
+        border: 2px solid #0d6efd;
+    }
+    .btn-outline-primary:hover {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        border-color: transparent;
+        transform: translateY(-1px);
+    }
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075) !important;
+    }
+    .table-responsive {
+        scrollbar-width: thin;
+        scrollbar-color: #dee2e6 #fff;
+    }
+    .table-responsive::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    .table-responsive::-webkit-scrollbar-track {
+        background: #fff;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: #dee2e6;
+        border-radius: 20px;
+    }
+</style>
+
+<script>
+function resetForm() {
+    document.querySelector('form').reset();
+}
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Dynamic chart type handling
+document.getElementById('chart_type').addEventListener('change', function() {
+    const chartType = this.value;
+    const yAxis = document.getElementById('y_axis');
+    const colorBy = document.getElementById('color_by');
+    
+    if (chartType === 'pie') {
+        yAxis.removeAttribute('required');
+    } else {
+        yAxis.setAttribute('required', '');
+    }
+    
+    if (chartType === 'histogram') {
+        colorBy.disabled = true;
+        colorBy.value = 'None';
+    } else {
+        colorBy.disabled = false;
+    }
+});
+</script>
+{% endblock %} 

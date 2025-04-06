@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Visualization - Sales Data Forecasting</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #2575fc;
+            box-shadow: 0 0 0 0.25rem rgba(37, 117, 252, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.4);
+        }
+        .btn-outline-light {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #444;
+        }
+        .alert {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .current-settings {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .setting-label {
+            font-weight: 600;
+            color: #2575fc;
+            margin-bottom: 5px;
+        }
+        .setting-value {
+            color: #444;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-chart-line me-2"></i>Sales Data Forecasting
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-home me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            <i class="fas fa-edit me-2"></i>Edit Visualization
+                        </h4>
+                        <h6 class="text-muted mb-4">Dataset: {{ dataset.name }}</h6>
+
+                        <div class="current-settings mb-4">
+                            <h5 class="mb-3">Current Settings</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="setting-label">Chart Type</div>
+                                    <div class="setting-value">
+                                        <i class="fas fa-chart-{{ viz.chart_type }} me-2"></i>
+                                        {{ viz.chart_type|title }} Chart
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-label">X-Axis</div>
+                                    <div class="setting-value">{{ viz.x_axis }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-label">Y-Axis</div>
+                                    <div class="setting-value">{{ viz.y_axis }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="setting-label">Color By</div>
+                                    <div class="setting-value">{{ viz.color_by or 'None' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form method="POST" class="needs-validation" novalidate>
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Visualization Name</label>
+                                    <input type="text" class="form-control" name="viz_name" value="{{ viz.name }}" required>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Chart Type</label>
+                                    <select class="form-select" name="chart_type" required>
+                                        <option value="line" {% if viz.chart_type == 'line' %}selected{% endif %}>
+                                            <i class="fas fa-chart-line"></i> Line Chart
+                                        </option>
+                                        <option value="bar" {% if viz.chart_type == 'bar' %}selected{% endif %}>
+                                            <i class="fas fa-chart-bar"></i> Bar Chart
+                                        </option>
+                                        <option value="scatter" {% if viz.chart_type == 'scatter' %}selected{% endif %}>
+                                            <i class="fas fa-chart-scatter"></i> Scatter Plot
+                                        </option>
+                                        <option value="pie" {% if viz.chart_type == 'pie' %}selected{% endif %}>
+                                            <i class="fas fa-chart-pie"></i> Pie Chart
+                                        </option>
+                                        <option value="histogram" {% if viz.chart_type == 'histogram' %}selected{% endif %}>
+                                            <i class="fas fa-chart-histogram"></i> Histogram
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">X-Axis</label>
+                                    <select class="form-select" name="x_axis" required>
+                                        <option value="">Select Column</option>
+                                        {% for column in columns %}
+                                            <option value="{{ column }}" {% if column == viz.x_axis %}selected{% endif %}>
+                                                {{ column }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Y-Axis</label>
+                                    <select class="form-select" name="y_axis" required>
+                                        <option value="">Select Column</option>
+                                        {% for column in columns %}
+                                            <option value="{{ column }}" {% if column == viz.y_axis %}selected{% endif %}>
+                                                {{ column }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Color By (Optional)</label>
+                                    <select class="form-select" name="color_by">
+                                        <option value="">None</option>
+                                        {% for column in columns %}
+                                            <option value="{{ column }}" {% if column == viz.color_by %}selected{% endif %}>
+                                                {{ column }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                                <a href="{{ url_for('view_visualization', viz_id=viz.id) }}" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+</html> 

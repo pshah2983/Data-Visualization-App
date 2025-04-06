@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Clean Dataset: {{ dataset.name }}</h2>
+    
+    <!-- Dataset Information Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Dataset Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <p><strong>Total Rows:</strong> {{ info.total_rows }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Total Columns:</strong> {{ info.total_columns }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Missing Cells:</strong> {{ info.missing_cells }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Duplicate Rows:</strong> {{ info.duplicate_rows }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Preview -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Data Preview</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            {% for column in columns %}
+                            <th>{{ column }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in preview_data %}
+                        <tr>
+                            {% for column in columns %}
+                            <td>{{ row[column] }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Information -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Column Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Column Name</th>
+                            <th>Data Type</th>
+                            <th>Missing Values</th>
+                            <th>Unique Values</th>
+                            <th>Sample Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for col in columns_info %}
+                        <tr>
+                            <td>{{ col.name }}</td>
+                            <td>{{ col.dtype }}</td>
+                            <td>{{ col.missing_values }}</td>
+                            <td>{{ col.unique_values }}</td>
+                            <td>{{ col.sample_values|join(", ") }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cleaning Options Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Cleaning Options</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <!-- Column Selection -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Select Columns to Keep</strong></label>
+                    <div class="row">
+                        {% for column in columns %}
+                        <div class="col-md-3 mb-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="selected_columns" value="{{ column }}" id="col_{{ loop.index }}" checked>
+                                <label class="form-check-label" for="col_{{ loop.index }}">{{ column }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Basic Cleaning Options -->
+                <div class="mb-3">
+                    <label class="form-label"><strong>Basic Cleaning Options</strong></label>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" name="drop_duplicates" id="drop_duplicates">
+                        <label class="form-check-label" for="drop_duplicates">Remove Duplicate Rows</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" name="drop_na_rows" id="drop_na_rows">
+                        <label class="form-check-label" for="drop_na_rows">Remove Rows with Missing Values</label>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Clean Dataset</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        padding: 15px 20px;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .btn {
+        padding: 8px 20px;
+        border-radius: 5px;
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+    .btn-secondary:hover {
+        background-color: #5c636a;
+    }
+</style>
+{% endblock %} 
